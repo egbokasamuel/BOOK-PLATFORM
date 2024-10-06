@@ -5,10 +5,10 @@ import {
   Route,
   useNavigate,
 } from "react-router-dom";
-import Header from "./components/Header";
-import Home from "./components/Home";
+import Header from "./Components/Header";
+import Home from "./Components/Home";
 import SelfPublish from "./pages/SelfPublish"; // Updated to reflect the correct component name
-import HelpCentre from "./components/HelpCentre";
+import HelpCentre from "./Components/HelpCentre";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
