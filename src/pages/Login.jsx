@@ -5,15 +5,19 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Hardcoded valid credentials for demonstration
-  const validEmail = "user@example.com";
-  const validPassword = "password123";
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Simple validation for email and password
-    if (email === validEmail && password === validPassword) {
+    // Make API request for login
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
       setError("");
       console.log("Login successful");
       // Redirect or further login logic goes here
@@ -72,7 +76,7 @@ const Login = () => {
           <div className="text-center">
             <button
               type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 w-full"
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg w-full"
             >
               Login
             </button>

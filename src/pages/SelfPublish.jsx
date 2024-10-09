@@ -2,197 +2,216 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SelfPublish = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
-  const [bookCover, setBookCover] = useState(null);
-  const [bookFile, setBookFile] = useState(null);
+  const [manuscript, setManuscript] = useState(null); // State for manuscript file
+  const [cover, setCover] = useState(null); // State for book cover file
 
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      title,
-      subtitle,
-      author,
-      description,
-      category,
-      price,
-      bookCover,
-      bookFile,
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("subtitle", subtitle);
+    formData.append("author", author);
+    formData.append("description", description);
+    formData.append("category", category);
+    formData.append("price", price);
+    if (manuscript) formData.append("manuscript", manuscript);
+    if (cover) formData.append("cover", cover);
+
+    // API request to publish book
+    const response = await fetch("/api/self-publish", {
+      method: "POST",
+      body: formData,
     });
-    // Navigate to dashboard after publishing
-    navigate("/dashboard");
+
+    if (response.ok) {
+      console.log("Book published successfully!");
+      navigate("/dashboard");
+    } else {
+      console.error("Failed to publish book");
+    }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <div className="max-w-screen-lg mx-auto">
-        {/* Header Section */}
-        <header className="bg-blue-500 text-white p-6 rounded-lg shadow-lg mb-8 text-center">
-          <h1 className="text-3xl font-bold">Self-Publish Your Book</h1>
-          <p className="mt-2 text-lg">
-            Get your book in the hands of readers around the world.
-          </p>
-        </header>
-
-        {/* Form Section */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-lg"
-        >
-          {/* Book Title */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="title">
-              Book Title
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center mb-6">
+          Self-Publish Your Book
+        </h2>
+        <form onSubmit={handleSubmit}>
+          {/* Title Input */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="title"
+            >
+              Title
             </label>
             <input
               type="text"
               id="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              placeholder="Enter the book title"
+              onChange={(event) => setTitle(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter book title"
+              required
             />
           </div>
 
-          {/* Book Subtitle */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="subtitle">
-              Book Subtitle
+          {/* Subtitle Input */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="subtitle"
+            >
+              Subtitle
             </label>
             <input
               type="text"
               id="subtitle"
               value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              placeholder="Enter the book subtitle"
+              onChange={(event) => setSubtitle(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter book subtitle"
             />
           </div>
 
-          {/* Author Name */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="author">
-              Author Name
+          {/* Author Input */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="author"
+            >
+              Author
             </label>
             <input
               type="text"
               id="author"
               value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              placeholder="Enter your name"
+              onChange={(event) => setAuthor(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter author name"
+              required
             />
           </div>
 
-          {/* Book Description */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="description">
-              Book Description
+          {/* Description Input */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="description"
+            >
+              Description
             </label>
             <textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              placeholder="Enter a brief description of the book"
+              onChange={(event) => setDescription(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter book description"
               rows="4"
+              required
             ></textarea>
           </div>
 
-          {/* Category */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="category">
+          {/* Category Select */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="category"
+            >
               Category
             </label>
             <select
               id="category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
+              onChange={(event) => setCategory(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             >
-              <option value="" disabled>
-                Select Category
-              </option>
-              <optgroup label="Fiction">
-                <option value="Fantasy">Fantasy</option>
-                <option value="Science Fiction">Science Fiction</option>
-                <option value="Mystery">Mystery</option>
-              </optgroup>
-              <optgroup label="Non-Fiction">
-                <option value="Biography">Biography</option>
-                <option value="Self-Help">Self-Help</option>
-                <option value="Health & Fitness">Health & Fitness</option>
-              </optgroup>
+              <option value="">Select category</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Non-Fiction">Non-Fiction</option>
+              <option value="Mystery">Mystery</option>
+              <option value="Fantasy">Fantasy</option>
+              <option value="Science Fiction">Science Fiction</option>
+              <option value="Biography">Biography</option>
+              <option value="Self-Help">Self-Help</option>
+              <option value="History">History</option>
+              <option value="Cooking">Cooking</option>
+              {/* Add more categories as needed */}
             </select>
           </div>
 
-          {/* Price */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="price">
-              Price
+          {/* Manuscript Upload */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="manuscript"
+            >
+              Upload Manuscript
             </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                $
-              </span>
-              <input
-                type="number"
-                id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full p-3 pl-10 border border-gray-300 rounded-lg"
-                placeholder="Enter the price"
-              />
-            </div>
+            <input
+              type="file"
+              id="manuscript"
+              onChange={(event) => setManuscript(event.target.files[0])}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              accept=".pdf, .doc, .docx"
+              required
+            />
           </div>
 
           {/* Book Cover Upload */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="bookCover">
-              Book Cover
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="cover"
+            >
+              Upload Book Cover (PDF)
             </label>
             <input
               type="file"
-              id="bookCover"
-              onChange={(e) => setBookCover(e.target.files[0])}
-              className="w-full p-3 border border-gray-300 rounded-lg"
+              id="cover"
+              onChange={(event) => setCover(event.target.files[0])}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              accept=".pdf" // Changed to accept only PDF
+              required
             />
           </div>
 
-          {/* Book File Upload */}
-          <div className="mb-6">
-            <label className="block text-xl mb-2" htmlFor="bookFile">
-              Upload Book File
+          {/* Price Input */}
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-lg font-bold mb-2"
+              htmlFor="price"
+            >
+              Price
             </label>
             <input
-              type="file"
-              id="bookFile"
-              onChange={(e) => setBookFile(e.target.files[0])}
-              className="w-full p-3 border border-gray-300 rounded-lg"
+              type="number"
+              id="price"
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter book price"
+              required
             />
           </div>
 
-          {/* Submit and Cancel Buttons */}
-          <div className="flex justify-between">
+          {/* Publish Button */}
+          <div className="text-center">
             <button
               type="submit"
-              className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg w-full"
             >
-              Publish
-            </button>
-
-            <button
-              type="button"
-              className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
-              onClick={() => navigate("/dashboard")}
-            >
-              Cancel
+              Publish Book
             </button>
           </div>
         </form>

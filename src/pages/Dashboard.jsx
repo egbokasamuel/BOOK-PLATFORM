@@ -1,32 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const royaltyData = {
-  daily: 50.75,
-  monthly: 1200.35,
-  yearly: 14000.5,
-};
-
-const salesByCountry = [
-  { country: "United States", sales: 500 },
-  { country: "Canada", sales: 250 },
-  { country: "United Kingdom", sales: 300 },
-  { country: "Australia", sales: 150 },
-  { country: "Germany", sales: 100 },
-];
-
-const reviews = [
-  { title: "Book One", review: "A fantastic read!" },
-  { title: "Book Two", review: "Very informative and engaging." },
-];
-
-const liveBooks = [
-  { title: "Book A", category: "Fiction", price: "$10.99" },
-  { title: "Book B", category: "Non-Fiction", price: "$12.99" },
-];
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [royaltyData, setRoyaltyData] = useState({});
+  const [salesByCountry, setSalesByCountry] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [liveBooks, setLiveBooks] = useState([]);
+
+  useEffect(() => {
+    // Fetch royalty data
+    const fetchRoyalties = async () => {
+      const response = await fetch("/api/royalties");
+      const data = await response.json();
+      setRoyaltyData(data);
+    };
+
+    // Fetch sales by country
+    const fetchSales = async () => {
+      const response = await fetch("/api/sales");
+      const data = await response.json();
+      setSalesByCountry(data);
+    };
+
+    // Fetch reviews
+    const fetchReviews = async () => {
+      const response = await fetch("/api/reviews");
+      const data = await response.json();
+      setReviews(data);
+    };
+
+    // Fetch live books
+    const fetchLiveBooks = async () => {
+      const response = await fetch("/api/live-books");
+      const data = await response.json();
+      setLiveBooks(data);
+    };
+
+    fetchRoyalties();
+    fetchSales();
+    fetchReviews();
+    fetchLiveBooks();
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -42,7 +57,7 @@ const Dashboard = () => {
             <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold">Daily Royalty</h2>
               <p className="text-4xl font-bold">
-                ${royaltyData.daily.toFixed(2)}
+                ${royaltyData.daily?.toFixed(2)}
               </p>
               <p className="text-sm">Earnings from today's sales</p>
             </div>
@@ -51,7 +66,7 @@ const Dashboard = () => {
             <div className="bg-green-500 text-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold">Monthly Royalty</h2>
               <p className="text-4xl font-bold">
-                ${royaltyData.monthly.toFixed(2)}
+                ${royaltyData.monthly?.toFixed(2)}
               </p>
               <p className="text-sm">Earnings from this month's sales</p>
             </div>
@@ -60,7 +75,7 @@ const Dashboard = () => {
             <div className="bg-purple-500 text-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold">Yearly Royalty</h2>
               <p className="text-4xl font-bold">
-                ${royaltyData.yearly.toFixed(2)}
+                ${royaltyData.yearly?.toFixed(2)}
               </p>
               <p className="text-sm">Earnings from this year's sales</p>
             </div>
