@@ -39,6 +39,7 @@ function App() {
     <Router>
       <div className="App">
         <Header />
+
         <SignOutButton />
         <Routes>
           <Route path="/" element={<Home />} />
